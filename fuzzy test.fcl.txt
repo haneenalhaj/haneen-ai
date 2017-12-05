@@ -1,0 +1,61 @@
+FUNCTION_BLOCK Talls // Block definition 
+
+// Define input variables (evidences)
+VAR_INPUT				
+	tall : REAL; //tall : mark for student I need to know it’s tall
+END_VAR
+
+// Define output variable (hypothesis) 
+VAR_OUTPUT				
+	Student_tall_rate : REAL; // tall or B or C .
+END_VAR
+
+
+// Fuzzify input variable 'tall': {'A', 'B' , 'C'}
+FUZZIFY tall			
+	TERM A := (152, 1) (155, 1) (158,0) ; 
+	TERM B := (158, 0) (167,1) (172,1) (179,0);
+	TERM C := (179, 0) (181, 1) (198,1);
+END_FUZZIFY
+
+
+
+
+// Fuzzify input variable 'mean': { 'high', 'medium' , 'low' }
+FUZZIFY mean			
+	TERM A := (152, 1) (155, 1) (158,0) ; 
+	TERM B := (158, 0) (167,1) (172,1) (179,0);
+	TERM C := (179, 0) (181, 1) (198,1);
+END_FUZZIFY
+
+
+
+// Defzzzify output variable 'Student_tall' : {'tall', 'average' , 'short' }
+DEFUZZIFY Student_tall_rate			
+	TERM A := (152, 1) (155, 1) (158,0) ; 
+	TERM B := (158, 0) (167,1) (172,1) (179,0);
+	TERM C := (179, 0) (181, 1) (198,1);
+
+	METHOD : COG;	   // Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;	   // Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK No1
+	AND : MIN;	// Use 'min' for 'and'
+	ACT : MIN;	// Use 'min' activation method
+	ACCU : MAX;	// Use 'max' accumulation method
+	
+	RULE 1 : IF tall IS A AND mean IS  A  THEN Student_tall_rate IS short ;
+	RULE 3 : IF tall IS A AND mean IS  B  THEN Student_tall_rate IS short;
+	RULE 5 : IF tall IS A AND mean IS  C  THEN Student_tall_rate IS average;
+	RULE 7 : IF tall IS B AND mean IS  A  THEN Student_tall_rate IS average;
+	RULE 8 : IF tall IS C AND mean IS  A  THEN Student_tall_rate IS  short;
+	RULE 9 : IF tall IS C AND mean IS  B  THEN Student_tall_rate IS  short;
+
+   
+    
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
